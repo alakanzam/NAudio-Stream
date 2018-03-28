@@ -1,4 +1,4 @@
-﻿namespace UdpClient.Enumerations
+﻿namespace NAudioClient.Enumerations
 {
     public enum ApplicationStatus
     {

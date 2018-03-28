@@ -15,8 +15,8 @@
 using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using UdpClient.Interfaces;
-using UdpClient.Services;
+using NAudioClient.Interfaces;
+using NAudioClient.Services;
 
 namespace UdpClient.ViewModel
 {
@@ -48,6 +48,7 @@ namespace UdpClient.ViewModel
 
             // Services registration.
             SimpleIoc.Default.Register<IAudioService, AudioService>();
+            SimpleIoc.Default.Register<INetworkService, NetworkService>();
         }
 
         public MainViewModel Main

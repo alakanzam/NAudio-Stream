@@ -3,15 +3,21 @@ using GalaSoft.MvvmLight;
 using NAudio.Wave;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using Shared.Interfaces;
 using Shared.Models;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 using System.Windows.Threading;
 using CommonServiceLocator;
 using GalaSoft.MvvmLight.Command;
-using UdpClient.Enumerations;
-using UdpClient.Interfaces;
+using NAudioClient.Enumerations;
+using NAudioClient.Interfaces;
+using NAudioClient.Model;
+using UdpClient = System.Net.Sockets.UdpClient;
 
 namespace UdpClient.ViewModel
 {
@@ -42,6 +48,11 @@ namespace UdpClient.ViewModel
         public ObservableCollection<INetworkChatCodec> AudioCodecs { get; private set; }
 
         /// <summary>
+        /// List of application role.
+        /// </summary>
+        public ObservableCollection<Role> Roles { get; set; }
+
+        /// <summary>
         /// Device which is being selected.
         /// </summary>
         public WaveInCapabilities SelectedAudioDevice { get; set; }
@@ -52,9 +63,14 @@ namespace UdpClient.ViewModel
         public INetworkChatCodec SelectedAudioCodec { get; set; }
 
         /// <summary>
+        /// Role which is selected by user.
+        /// </summary>
+        public Role SelectedRole { get; set; }
+
+        /// <summary>
         /// IP address.
         /// </summary>
-        public string IPAddress { get; set; } = "localhost";
+        public string IPAddress { get; set; } = "127.0.0.1";
 
         /// <summary>
         /// Port
@@ -77,7 +93,7 @@ namespace UdpClient.ViewModel
                 Set(nameof(ApplicationStatus), ref _applicationStatus, value);
                 RaisePropertyChanged(nameof(IsRecordButtonAvailable));
                 RaisePropertyChanged(nameof(IsStopRecordingButtonAvailable));
-                RaisePropertyChanged(nameof(IsConnectButtonAvailable));
+                RaisePropertyChanged(nameof(IsUdpConnectionAvailable));
             }
         }
 
@@ -87,15 +103,23 @@ namespace UdpClient.ViewModel
         private readonly IAudioService _audioService;
 
         /// <summary>
+        /// Service which is used for broadcasting sound to service end-point.
+        /// </summary>
+        private readonly INetworkService _networkService;
+
+        /// <summary>
         /// Whether connect button is available or not.
         /// </summary>
-        public bool IsConnectButtonAvailable
+        public bool IsUdpConnectionAvailable
         {
             get
             {
-                if (Status == ApplicationStatus.ConnectedUdp)
-                    return false;
-
+                switch (Status)
+                {
+                    case ApplicationStatus.ConnectedUdp:
+                    case ApplicationStatus.Recording:
+                        return false;
+                }
                 return true;
             }
         }
@@ -113,6 +137,9 @@ namespace UdpClient.ViewModel
                 if (Status == ApplicationStatus.Recording)
                     return false;
 
+                if (SelectedRole.Value == ApplicationRole.Server)
+                    return false;
+
                 return true;
             }
         }
@@ -128,6 +155,9 @@ namespace UdpClient.ViewModel
                     return false;
 
                 if (Status == ApplicationStatus.ConnectedUdp)
+                    return false;
+
+                if (SelectedRole.Value == ApplicationRole.Server)
                     return false;
 
                 return true;
@@ -164,9 +194,11 @@ namespace UdpClient.ViewModel
             // Get list of audio device.
             AudioDevices = GetAudioDevices();
             AudioCodecs = GetAudioCodecs();
+            Roles = GetRoles();
 
-            // Initialize audio service.
+            // Initialize service.
             _audioService = ServiceLocator.Current.GetInstance<IAudioService>();
+            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();
 
             // Relay command initialization.
             ClickRecordRelayCommand = new RelayCommand(ClickRecord);
@@ -220,6 +252,21 @@ namespace UdpClient.ViewModel
         }
 
         /// <summary>
+        /// Get list of application roles.
+        /// </summary>
+        /// <returns></returns>
+        private ObservableCollection<Role> GetRoles()
+        {
+            var roles = new List<Role>();
+            roles.Add(new Role(nameof(ApplicationRole.Client), ApplicationRole.Client));
+            roles.Add(new Role(nameof(ApplicationRole.Server), ApplicationRole.Server));
+
+            // Select the first item.
+            SelectedRole = roles[0];
+            return new ObservableCollection<Role>(roles);
+        }
+
+        /// <summary>
         /// Event which is triggered when record button is clicked.
         /// </summary>
         private void ClickRecord()
@@ -229,14 +276,11 @@ namespace UdpClient.ViewModel
             recorder.DeviceNumber = AudioDevices.IndexOf(SelectedAudioDevice);
             recorder.WaveFormat = SelectedAudioCodec.RecordFormat;
             recorder.DataAvailable += OnSoundBeingRecorded;
-
-            // Initialize buffer.
-            _audioService.PlaybackBuffer = new BufferedWaveProvider(SelectedAudioCodec.RecordFormat);
-
+            
             // Initialize playback device.
-            var playback = new WaveOut();
-            playback.Init(_audioService.PlaybackBuffer);
-            _audioService.Playback = playback;
+            //var playback = new WaveOut();
+            //playback.Init(_audioService.PlaybackBuffer);
+            //_audioService.Playback = playback;
 
             // Clear the recording stream.
             _audioService.RecordingStream = new MemoryStream();
@@ -255,13 +299,11 @@ namespace UdpClient.ViewModel
         {
             // Stop recording.
             _audioService.Recorder.StopRecording();
-
-            _audioService.Playback.Play();
-
+            
             // Read all data from stream
-            var data = _audioService.RecordingStream.ToArray();
-            _audioService.PlaybackBuffer.BufferLength = data.Length;
-            _audioService.PlaybackBuffer.AddSamples(data, 0, data.Length);
+            //var data = _audioService.RecordingStream.ToArray();
+            //_audioService.PlaybackBuffer.BufferLength = data.Length;
+            //_audioService.PlaybackBuffer.AddSamples(data, 0, data.Length);
 
             // Stop recording.
             Status = ApplicationStatus.ConnectedUdp;
@@ -274,7 +316,10 @@ namespace UdpClient.ViewModel
         /// <param name="waveInEventArgs"></param>
         private async void OnSoundBeingRecorded(object sender, WaveInEventArgs waveInEventArgs)
         {
-            await _audioService.RecordingStream.WriteAsync(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
+            byte[] encoded = SelectedAudioCodec.Encode(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
+            _networkService.Broadcaster.Send(encoded, encoded.Length);
+
+            //await _audioService.RecordingStream.WriteAsync(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
         }
 
         /// <summary>
@@ -282,7 +327,72 @@ namespace UdpClient.ViewModel
         /// </summary>
         private void ClickConnect()
         {
-            Status = ApplicationStatus.ConnectedUdp;
+            try
+            {
+                // Initialize IP End-point.
+                //var ipEndPoint = new IPEndPoint(System.Net.IPAddress.Parse(IPAddress), Port);
+                var ipEndPoint = new IPEndPoint(System.Net.IPAddress.Any, Port);
+
+                // Initialize udp client.
+                var udpClient = new System.Net.Sockets.UdpClient();
+                
+                switch (SelectedRole.Value)
+                {
+                    case ApplicationRole.Client:
+                        udpClient.Connect(ipEndPoint);
+                        _networkService.Broadcaster = udpClient;
+
+                        Status = ApplicationStatus.ConnectedUdp;
+                        break;
+
+                    default:
+                        udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                        udpClient.Client.Bind(ipEndPoint);
+                        _networkService.Listener = udpClient;
+
+                        // Initialize playback.
+                        // Initialize buffer.
+                        _audioService.PlaybackBuffer = new BufferedWaveProvider(SelectedAudioCodec.RecordFormat);
+                        // Play sound.
+                        _audioService.Playback = new WaveOut();
+                        _audioService.Playback.Init(_audioService.PlaybackBuffer);
+                        _audioService.Playback.Play();
+
+                        // Initialize listening thread.
+                        var state = new ListenerThreadState(ipEndPoint, SelectedAudioCodec);
+                        Status = ApplicationStatus.ConnectedUdp;
+                        ThreadPool.QueueUserWorkItem(ListentToIncomingVoice, state);
+
+                        break;
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
+            
+        }
+
+        private void ListentToIncomingVoice(object state)
+        {
+            var listenerThreadState = (ListenerThreadState)state;
+            var endPoint = listenerThreadState.EndPoint;
+            try
+            {
+                while (Status == ApplicationStatus.ConnectedUdp)
+                {
+                    var udpListener = _networkService.Listener;
+                    byte[] b =  udpListener.Receive(ref endPoint);
+                    byte[] decoded = listenerThreadState.Codec.Decode(b, 0, b.Length);
+
+                    _audioService.PlaybackBuffer.AddSamples(decoded, 0, decoded.Length);
+                }
+            }
+            catch (SocketException ex)
+            {
+                // usually not a problem - just means we have disconnected
+                var a = 1;
+            }
         }
 
         #endregion

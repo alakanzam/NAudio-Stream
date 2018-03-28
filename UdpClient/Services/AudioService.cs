@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using NAudio.Wave;
-using UdpClient.Interfaces;
+using NAudioClient.Interfaces;
 
-namespace UdpClient.Services
+namespace NAudioClient.Services
 {
     public class AudioService : IAudioService
     {
