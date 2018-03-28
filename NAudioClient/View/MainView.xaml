@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:enumerations="clr-namespace:NAudioClient.Enumerations"
         mc:Ignorable="d"
-        Title="UDP Client"
+        Title="NAudio Client"
         Height="300"
         Width="525"
         WindowStartupLocation="CenterScreen"
@@ -61,7 +61,7 @@
 
             </StackPanel>
 
-            <Button Grid.Column="1" Content="OK">
+            <Button Grid.Column="1">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <i:InvokeCommandAction Command="{Binding ClickConnectRelayCommand}" />
@@ -70,11 +70,14 @@
 
                 <Button.Style>
                     <Style TargetType="Button">
+                        <Setter Property="Content" Value="Start"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsUdpConnectionAvailable}" Value="False">
                                 <Setter Property="IsEnabled" Value="False" />
                             </DataTrigger>
-
+                            <DataTrigger Binding="{Binding Status}" Value="{x:Static enumerations:ApplicationStatus.ConnectedUdp}">
+                                <Setter Property="Content" Value="Stop"></Setter>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
