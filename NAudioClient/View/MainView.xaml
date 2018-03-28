@@ -1,0 +1,157 @@
+﻿<Window x:Class="NAudioClient.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UdpClient"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:enumerations="clr-namespace:NAudioClient.Enumerations"
+        mc:Ignorable="d"
+        Title="UDP Client"
+        Height="300"
+        Width="525"
+        WindowStartupLocation="CenterScreen"
+        DataContext="{Binding Main, Source={StaticResource Locator}}">
+
+    <StackPanel>
+
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="128" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Label>Role</Label>
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Roles}"
+                      IsEnabled="{Binding IsUdpConnectionAvailable}"
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedRole}" />
+        </Grid>
+
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="64" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="128" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label>IP Address</Label>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding IPAddress}" IsEnabled="{Binding IsUdpConnectionAvailable}" />
+                </Grid>
+
+                <Grid Margin="0, 10, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="128" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label>Port</Label>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding Port}"
+                             IsEnabled="{Binding IsUdpConnectionAvailable}" />
+                </Grid>
+
+            </StackPanel>
+
+            <Button Grid.Column="1" Content="OK">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:InvokeCommandAction Command="{Binding ClickConnectRelayCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsUdpConnectionAvailable}" Value="False">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="128" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Label>Devices</Label>
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding AudioDevices, Mode=OneWay}"
+                      IsEnabled="{Binding IsRecordButtonAvailable}"
+                      DisplayMemberPath="ProductName"
+                      SelectedItem="{Binding SelectedAudioDevice}" />
+        </Grid>
+
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="128" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Label>Codecs</Label>
+            <ComboBox Grid.Column="1"
+                      IsEnabled="{Binding IsRecordButtonAvailable}"
+                      ItemsSource="{Binding AudioCodecs, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedAudioCodec}"
+                      DisplayMemberPath="Name" />
+        </Grid>
+
+        <Button Margin="0, 10, 0, 0"
+                Content="Record">
+
+            <Button.Style>
+                <Style TargetType="Button"
+                       BasedOn="{StaticResource {x:Type Button}}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRecordButtonAvailable}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <i:InvokeCommandAction Command="{Binding ClickRecordRelayCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+
+        </Button>
+
+        <Button Margin="0, 10, 0, 0"
+                Content="Stop">
+
+            <Button.Style>
+                <Style TargetType="Button"
+                       BasedOn="{StaticResource {x:Type Button}}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsStopRecordingButtonAvailable}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <i:InvokeCommandAction Command="{Binding ClickStopRelayCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+
+    </StackPanel>
+</Window>

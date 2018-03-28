@@ -61,14 +61,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\AcmChatCodec.cs" />
-    <Compile Include="Models\ALawChatCodec.cs" />
+    <Compile Include="Models\Acm\AcmChatCodec.cs" />
+    <Compile Include="Models\Acm\AcmALawChatCodec.cs" />
+    <Compile Include="Models\Acm\ALawChatCodec.cs" />
     <Compile Include="Models\G722ChatCodec.cs" />
     <Compile Include="Models\Gsm610ChatCodec.cs" />
     <Compile Include="Interfaces\INetworkChatCodec.cs" />
     <Compile Include="Models\MicrosoftAdpcmChatCodec.cs" />
-    <Compile Include="Models\MuLawChatCodec.cs" />
-    <Compile Include="Models\SpeexChatCodec.cs" />
+    <Compile Include="Models\MuLaw\AcmMuLawChatCodec.cs" />
+    <Compile Include="Models\MuLaw\MuLawChatCodec.cs" />
+    <Compile Include="Models\Speex\NarrowBandSpeexCodec.cs" />
+    <Compile Include="Models\Speex\SpeexChatCodec.cs" />
+    <Compile Include="Models\Speex\UltraWideBandSpeexCodec.cs" />
+    <Compile Include="Models\Speex\WideBandSpeexCodec.cs" />
     <Compile Include="Models\TrueSpeechChatCodec.cs" />
     <Compile Include="Models\UncompressedPcmChatCodec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

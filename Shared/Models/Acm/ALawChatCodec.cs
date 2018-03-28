@@ -3,27 +3,32 @@ using NAudio.Codecs;
 using NAudio.Wave;
 using Shared.Interfaces;
 
-namespace Shared.Models
+namespace Shared.Models.Acm
 {
-    public class AcmALawChatCodec : AcmChatCodec
-    {
-        public AcmALawChatCodec()
-            : base(new WaveFormat(8000, 16, 1), WaveFormat.CreateALawFormat(8000, 1))
-        {
-        }
-
-        public override string Name => "ACM G.711 a-law";
-    }
-
-
     public class ALawChatCodec : INetworkChatCodec
     {
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public string Name => "G.711 a-law";
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public int BitsPerSecond => RecordFormat.SampleRate * 8;
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public WaveFormat RecordFormat => new WaveFormat(8000, 16, 1);
 
+        /// <summary>
+        ///     <inheritdoc />
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public byte[] Encode(byte[] data, int offset, int length)
         {
             var encoded = new byte[length / 2];
@@ -33,6 +38,13 @@ namespace Shared.Models
             return encoded;
         }
 
+        /// <summary>
+        ///     <inheritdoc />
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public byte[] Decode(byte[] data, int offset, int length)
         {
             var decoded = new byte[length * 2];
@@ -40,8 +52,8 @@ namespace Shared.Models
             for (var n = 0; n < length; n++)
             {
                 var decodedSample = ALawDecoder.ALawToLinearSample(data[n + offset]);
-                decoded[outIndex++] = (byte) (decodedSample & 0xFF);
-                decoded[outIndex++] = (byte) (decodedSample >> 8);
+                decoded[outIndex++] = (byte)(decodedSample & 0xFF);
+                decoded[outIndex++] = (byte)(decodedSample >> 8);
             }
             return decoded;
         }

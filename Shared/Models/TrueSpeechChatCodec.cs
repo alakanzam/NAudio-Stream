@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using Shared.Models.Acm;
 
 namespace Shared.Models
 {
@@ -9,11 +10,22 @@ namespace Shared.Models
     /// </summary>
     public class TrueSpeechChatCodec : AcmChatCodec
     {
+        #region Constructor
+
         public TrueSpeechChatCodec()
             : base(new WaveFormat(8000, 16, 1), new TrueSpeechWaveFormat())
         {
         }
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// <inheritdoc />
+        /// </summary>
         public override string Name => "DSP Group TrueSpeech";
+
+        #endregion
     }
 }

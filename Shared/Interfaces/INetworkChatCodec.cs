@@ -5,6 +5,8 @@ namespace Shared.Interfaces
 {
     public interface INetworkChatCodec : IDisposable
     {
+        #region Properties
+
         /// <summary>
         ///     Friendly Name for this codec
         /// </summary>
@@ -34,5 +36,7 @@ namespace Shared.Interfaces
         ///     Decodes a block of audio
         /// </summary>
         byte[] Decode(byte[] data, int offset, int length);
+
+        #endregion
     }
 }
