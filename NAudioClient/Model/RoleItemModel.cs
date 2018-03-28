@@ -2,7 +2,7 @@
 
 namespace NAudioClient.Model
 {
-    public class Role
+    public class RoleItemModel
     {
         #region Constructor
 
@@ -11,7 +11,7 @@ namespace NAudioClient.Model
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        public Role(string name, ApplicationRole value)
+        public RoleItemModel(string name, ClientRole value)
         {
             Name = name;
             Value = value;
@@ -29,7 +29,7 @@ namespace NAudioClient.Model
         /// <summary>
         ///     Value of role.
         /// </summary>
-        public ApplicationRole Value { get; set; }
+        public ClientRole Value { get; set; }
 
         #endregion
     }

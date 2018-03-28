@@ -1,6 +1,6 @@
 ﻿namespace NAudioClient.Enumerations
 {
-    public enum ApplicationStatus
+    public enum ClientStatus
     {
         Initial,
         ConnectedUdp,

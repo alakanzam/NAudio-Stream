@@ -1,7 +1,4 @@
-﻿using System;
-using NAudio.Codecs;
-using NAudio.Wave;
-using Shared.Interfaces;
+﻿using NAudio.Wave;
 
 namespace Shared.Models.Acm
 {
@@ -14,7 +11,4 @@ namespace Shared.Models.Acm
 
         public override string Name => "ACM G.711 a-law";
     }
-
-
-    
 }

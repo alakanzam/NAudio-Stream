@@ -53,7 +53,7 @@ namespace UdpClient.ViewModel
         /// <summary>
         /// List of application role.
         /// </summary>
-        public ObservableCollection<Role> Roles { get; set; }
+        public ObservableCollection<NAudioClient.Model.RoleItemModel> Roles { get; set; }
 
         /// <summary>
         /// Device which is being selected.
@@ -68,7 +68,7 @@ namespace UdpClient.ViewModel
         /// <summary>
         /// Role which is selected by user.
         /// </summary>
-        public Role SelectedRole { get; set; }
+        public RoleItemModel SelectedRole { get; set; }
 
         /// <summary>
         /// IP address.
@@ -83,17 +83,17 @@ namespace UdpClient.ViewModel
         /// <summary>
         /// Status of current application.
         /// </summary>
-        private ApplicationStatus _applicationStatus;
+        private ClientStatus _applicationStatus;
 
         /// <summary>
         /// Status of current application.
         /// </summary>
-        public ApplicationStatus Status
+        public ClientStatus Status
         {
             get { return _applicationStatus; }
             set
             {
-                Set(nameof(ApplicationStatus), ref _applicationStatus, value);
+                Set(nameof(ClientStatus), ref _applicationStatus, value);
                 RaisePropertyChanged(nameof(IsRecordButtonAvailable));
                 RaisePropertyChanged(nameof(IsStopRecordingButtonAvailable));
                 RaisePropertyChanged(nameof(IsUdpConnectionAvailable));
@@ -119,8 +119,8 @@ namespace UdpClient.ViewModel
             {
                 switch (Status)
                 {
-                    case ApplicationStatus.ConnectedUdp:
-                    case ApplicationStatus.Recording:
+                    case ClientStatus.ConnectedUdp:
+                    case ClientStatus.Recording:
                         return false;
                 }
                 return true;
@@ -134,13 +134,13 @@ namespace UdpClient.ViewModel
         {
             get
             {
-                if (Status == ApplicationStatus.Initial)
+                if (Status == ClientStatus.Initial)
                     return false;
 
-                if (Status == ApplicationStatus.Recording)
+                if (Status == ClientStatus.Recording)
                     return false;
 
-                if (SelectedRole.Value == ApplicationRole.Server)
+                if (SelectedRole.Value == ClientRole.Server)
                     return false;
 
                 return true;
@@ -154,13 +154,13 @@ namespace UdpClient.ViewModel
         {
             get
             {
-                if (Status == ApplicationStatus.Initial)
+                if (Status == ClientStatus.Initial)
                     return false;
 
-                if (Status == ApplicationStatus.ConnectedUdp)
+                if (Status == ClientStatus.ConnectedUdp)
                     return false;
 
-                if (SelectedRole.Value == ApplicationRole.Server)
+                if (SelectedRole.Value == ClientRole.Server)
                     return false;
 
                 return true;
@@ -258,15 +258,15 @@ namespace UdpClient.ViewModel
         /// Get list of application roles.
         /// </summary>
         /// <returns></returns>
-        private ObservableCollection<Role> GetRoles()
+        private ObservableCollection<NAudioClient.Model.RoleItemModel> GetRoles()
         {
-            var roles = new List<Role>();
-            roles.Add(new Role(nameof(ApplicationRole.Client), ApplicationRole.Client));
-            roles.Add(new Role(nameof(ApplicationRole.Server), ApplicationRole.Server));
+            var roles = new List<RoleItemModel>();
+            roles.Add(new NAudioClient.Model.RoleItemModel(nameof(ClientRole.Client), NAudioClient.Enumerations.ClientRole.Client));
+            roles.Add(new NAudioClient.Model.RoleItemModel(nameof(ClientRole.Server), NAudioClient.Enumerations.ClientRole.Server));
 
             // Select the first item.
             SelectedRole = roles[0];
-            return new ObservableCollection<Role>(roles);
+            return new ObservableCollection<NAudioClient.Model.RoleItemModel>(roles);
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace UdpClient.ViewModel
             _audioService.RecordingStream = new MemoryStream();
             _audioService.Recorder = recorder;
 
-            Status = ApplicationStatus.Recording;
+            Status = ClientStatus.Recording;
 
             // Start sound recording.
             recorder.StartRecording();
@@ -304,7 +304,7 @@ namespace UdpClient.ViewModel
             _audioService.Recorder.StopRecording();
             
             // Stop recording.
-            Status = ApplicationStatus.ConnectedUdp;
+            Status = ClientStatus.ConnectedUdp;
         }
 
         /// <summary>
@@ -335,13 +335,13 @@ namespace UdpClient.ViewModel
 
                 switch (SelectedRole.Value)
                 {
-                    case ApplicationRole.Client:
+                    case NAudioClient.Enumerations.ClientRole.Client:
                         //var ipEndPoint = new IPEndPoint(System.Net.IPAddress.Parse(IPAddress), Port);
                         endPoint = new IPEndPoint(System.Net.IPAddress.Parse(IPAddress), Port);
                         udpClient.Connect(endPoint);
                         _networkService.Broadcaster = udpClient;
 
-                        Status = ApplicationStatus.ConnectedUdp;
+                        Status = ClientStatus.ConnectedUdp;
                         break;
 
                     default:
@@ -360,8 +360,8 @@ namespace UdpClient.ViewModel
 
                         // Initialize listening thread.
                         var state = new ListenerThreadState(endPoint, SelectedAudioCodec);
-                        Status = ApplicationStatus.ConnectedUdp;
-                        ThreadPool.QueueUserWorkItem(ListentToIncomingVoice, state);
+                        Status = ClientStatus.ConnectedUdp;
+                        ThreadPool.QueueUserWorkItem(this.ListentToIncomingVoice, state);
 
                         break;
                 }
@@ -379,7 +379,7 @@ namespace UdpClient.ViewModel
             var endPoint = listenerThreadState.EndPoint;
             try
             {
-                while (Status == ApplicationStatus.ConnectedUdp)
+                while (Status == ClientStatus.ConnectedUdp)
                 {
                     var udpListener = _networkService.Listener;
                     byte[] b = udpListener.Receive(ref endPoint);

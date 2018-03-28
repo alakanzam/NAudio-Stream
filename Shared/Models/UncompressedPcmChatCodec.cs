@@ -18,12 +18,12 @@ namespace Shared.Models
         #region Properties
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public string Name => "PCM 8kHz 16 bit uncompressed";
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public WaveFormat RecordFormat { get; }
 
@@ -32,7 +32,7 @@ namespace Shared.Models
         #region Methods
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <param name="data"></param>
         /// <param name="offset"></param>
@@ -46,7 +46,7 @@ namespace Shared.Models
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <param name="data"></param>
         /// <param name="offset"></param>
@@ -60,27 +60,22 @@ namespace Shared.Models
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public int BitsPerSecond => RecordFormat.AverageBytesPerSecond * 8;
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public void Dispose()
         {
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public bool IsAvailable => true;
 
         #endregion
-
-
-
-
-
     }
 }

@@ -11,32 +11,32 @@ namespace Shared.Models
         #region Properties
 
         /// <summary>
-        /// Codec instance.
+        ///     Codec instance.
         /// </summary>
         private readonly G722Codec _codec;
 
         /// <summary>
-        /// State of decoder.
+        ///     State of decoder.
         /// </summary>
         private readonly G722CodecState _decoderState;
 
         /// <summary>
-        /// State of encoder.
+        ///     State of encoder.
         /// </summary>
         private readonly G722CodecState _encoderState;
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public string Name => "G.722 16kHz";
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public int BitsPerSecond { get; }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public WaveFormat RecordFormat { get; }
 
@@ -54,7 +54,7 @@ namespace Shared.Models
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public byte[] Encode(byte[] data, int offset, int length)
         {
@@ -69,7 +69,7 @@ namespace Shared.Models
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public byte[] Decode(byte[] data, int offset, int length)
         {
@@ -87,7 +87,7 @@ namespace Shared.Models
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public void Dispose()
         {
@@ -95,7 +95,7 @@ namespace Shared.Models
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public bool IsAvailable => true;
 

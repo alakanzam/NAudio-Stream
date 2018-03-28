@@ -8,17 +8,17 @@ namespace Shared.Models.Acm
     public class ALawChatCodec : INetworkChatCodec
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public string Name => "G.711 a-law";
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public int BitsPerSecond => RecordFormat.SampleRate * 8;
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public WaveFormat RecordFormat => new WaveFormat(8000, 16, 1);
 
@@ -52,8 +52,8 @@ namespace Shared.Models.Acm
             for (var n = 0; n < length; n++)
             {
                 var decodedSample = ALawDecoder.ALawToLinearSample(data[n + offset]);
-                decoded[outIndex++] = (byte)(decodedSample & 0xFF);
-                decoded[outIndex++] = (byte)(decodedSample >> 8);
+                decoded[outIndex++] = (byte) (decodedSample & 0xFF);
+                decoded[outIndex++] = (byte) (decodedSample >> 8);
             }
             return decoded;
         }

@@ -8,30 +8,6 @@ namespace Shared.Models.Speex
 {
     public abstract class SpeexChatCodec : INetworkChatCodec
     {
-        #region Properties
-
-        private readonly SpeexDecoder _decoder;
-        private readonly SpeexEncoder _encoder;
-        private readonly WaveBuffer _encoderInputBuffer;
-
-        /// <summary>
-        /// <inheritdoc />
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// <inheritdoc />
-        /// </summary>
-        public int BitsPerSecond => -1;
-
-        /// <summary>
-        /// <inheritdoc />
-        /// </summary>
-        public WaveFormat RecordFormat { get; }
-
-
-        #endregion
-
         #region Constructor
 
         protected SpeexChatCodec(BandMode bandMode, int sampleRate, string description)
@@ -45,10 +21,33 @@ namespace Shared.Models.Speex
 
         #endregion
 
+        #region Properties
+
+        private readonly SpeexDecoder _decoder;
+        private readonly SpeexEncoder _encoder;
+        private readonly WaveBuffer _encoderInputBuffer;
+
+        /// <summary>
+        ///     <inheritdoc />
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        ///     <inheritdoc />
+        /// </summary>
+        public int BitsPerSecond => -1;
+
+        /// <summary>
+        ///     <inheritdoc />
+        /// </summary>
+        public WaveFormat RecordFormat { get; }
+
+        #endregion
+
         #region Methods
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <param name="data"></param>
         /// <param name="offset"></param>
@@ -61,7 +60,7 @@ namespace Shared.Models.Speex
             if (samplesToEncode % _encoder.FrameSize != 0)
                 samplesToEncode -= samplesToEncode % _encoder.FrameSize;
             var outputBufferTemp = new byte[length]; // contains more than enough space
-            int bytesWritten = _encoder.Encode(_encoderInputBuffer.ShortBuffer, 0, samplesToEncode, outputBufferTemp, 0,
+            var bytesWritten = _encoder.Encode(_encoderInputBuffer.ShortBuffer, 0, samplesToEncode, outputBufferTemp, 0,
                 length);
             var encoded = new byte[bytesWritten];
             Array.Copy(outputBufferTemp, 0, encoded, 0, bytesWritten);
@@ -72,7 +71,7 @@ namespace Shared.Models.Speex
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <param name="data"></param>
         /// <param name="offset"></param>
@@ -82,7 +81,7 @@ namespace Shared.Models.Speex
         {
             var outputBufferTemp = new byte[length * 320];
             var wb = new WaveBuffer(outputBufferTemp);
-            int samplesDecoded = _decoder.Decode(data, offset, length, wb.ShortBuffer, 0, false);
+            var samplesDecoded = _decoder.Decode(data, offset, length, wb.ShortBuffer, 0, false);
             var bytesDecoded = samplesDecoded * 2;
             var decoded = new byte[bytesDecoded];
             Array.Copy(outputBufferTemp, 0, decoded, 0, bytesDecoded);
@@ -92,7 +91,7 @@ namespace Shared.Models.Speex
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public void Dispose()
         {
@@ -100,10 +99,10 @@ namespace Shared.Models.Speex
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         public bool IsAvailable => true;
-        
+
         private void ShiftLeftoverSamplesDown(int samplesEncoded)
         {
             var leftoverSamples = _encoderInputBuffer.ShortBufferCount - samplesEncoded;
@@ -119,6 +118,5 @@ namespace Shared.Models.Speex
         }
 
         #endregion
-
     }
 }

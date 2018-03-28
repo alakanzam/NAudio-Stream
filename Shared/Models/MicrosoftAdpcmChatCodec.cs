@@ -17,7 +17,7 @@ namespace Shared.Models
         #region Properties
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public override string Name => "Microsoft ADPCM";
 

@@ -70,13 +70,13 @@
 
                 <Button.Style>
                     <Style TargetType="Button">
-                        <Setter Property="Content" Value="Start"></Setter>
+                        <Setter Property="Content" Value="Start" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsUdpConnectionAvailable}" Value="False">
                                 <Setter Property="IsEnabled" Value="False" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Status}" Value="{x:Static enumerations:ApplicationStatus.ConnectedUdp}">
-                                <Setter Property="Content" Value="Stop"></Setter>
+                            <DataTrigger Binding="{Binding Status}" Value="{x:Static enumerations:ClientStatus.ConnectedUdp}">
+                                <Setter Property="Content" Value="Stop" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

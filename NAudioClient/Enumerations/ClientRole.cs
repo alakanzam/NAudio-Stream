@@ -1,6 +1,6 @@
 ﻿namespace NAudioClient.Enumerations
 {
-    public enum ApplicationRole
+    public enum ClientRole
     {
         Server,
         Client

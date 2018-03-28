@@ -10,22 +10,22 @@ namespace Shared.Models.MuLaw
         #region Propertie
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public string Name => "G.711 mu-law";
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public int BitsPerSecond => RecordFormat.SampleRate * 8;
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public WaveFormat RecordFormat => new WaveFormat(8000, 16, 1);
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public bool IsAvailable => true;
 
@@ -34,7 +34,7 @@ namespace Shared.Models.MuLaw
         #region Methods
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <param name="data"></param>
         /// <param name="offset"></param>
@@ -50,7 +50,7 @@ namespace Shared.Models.MuLaw
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <param name="data"></param>
         /// <param name="offset"></param>
@@ -63,14 +63,14 @@ namespace Shared.Models.MuLaw
             for (var n = 0; n < length; n++)
             {
                 var decodedSample = MuLawDecoder.MuLawToLinearSample(data[n + offset]);
-                decoded[outIndex++] = (byte)(decodedSample & 0xFF);
-                decoded[outIndex++] = (byte)(decodedSample >> 8);
+                decoded[outIndex++] = (byte) (decodedSample & 0xFF);
+                decoded[outIndex++] = (byte) (decodedSample >> 8);
             }
             return decoded;
         }
 
         /// <summary>
-        /// <inheritdoc />
+        ///     <inheritdoc />
         /// </summary>
         /// <returns></returns>
         public void Dispose()
@@ -79,6 +79,5 @@ namespace Shared.Models.MuLaw
         }
 
         #endregion
-
     }
 }

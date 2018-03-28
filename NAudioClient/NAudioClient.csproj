@@ -72,11 +72,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Enumerations\ApplicationRole.cs" />
-    <Compile Include="Enumerations\ApplicationStatus.cs" />
+    <Compile Include="Enumerations\ClientRole.cs" />
+    <Compile Include="Enumerations\ClientStatus.cs" />
     <Compile Include="Interfaces\IAudioService.cs" />
     <Compile Include="Model\ListenerThreadState.cs" />
-    <Compile Include="Model\Role.cs" />
+    <Compile Include="Model\RoleItemModel.cs" />
     <Compile Include="Services\AudioService.cs" />
     <Compile Include="Interfaces\INetworkService.cs" />
     <Compile Include="Services\NetworkService.cs" />

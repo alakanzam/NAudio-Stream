@@ -34,17 +34,17 @@ namespace Shared.Models.Acm
         private AcmStream _encodeStream;
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public WaveFormat RecordFormat { get; }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public abstract string Name { get; }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public int BitsPerSecond => _encodeFormat.AverageBytesPerSecond * 8;
 
@@ -53,7 +53,7 @@ namespace Shared.Models.Acm
         #region Methods
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public byte[] Encode(byte[] data, int offset, int length)
         {
@@ -64,7 +64,7 @@ namespace Shared.Models.Acm
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public byte[] Decode(byte[] data, int offset, int length)
         {
@@ -89,7 +89,7 @@ namespace Shared.Models.Acm
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public bool IsAvailable
         {
@@ -115,7 +115,7 @@ namespace Shared.Models.Acm
         }
 
         /// <summary>
-        /// Convert data to this current codec.
+        ///     Convert data to this current codec.
         /// </summary>
         /// <param name="conversionStream"></param>
         /// <param name="data"></param>
