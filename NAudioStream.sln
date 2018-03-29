@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAudioClient", "NAudioClient\NAudioClient.csproj", "{EAC7C42D-42D5-4646-A0B0-1DECB019C777}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundClient", "SoundClient\SoundClient.csproj", "{0EA86DB9-E267-4B8E-981A-F43AC471EDEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EAC7C42D-42D5-4646-A0B0-1DECB019C777}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAC7C42D-42D5-4646-A0B0-1DECB019C777}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAC7C42D-42D5-4646-A0B0-1DECB019C777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EA86DB9-E267-4B8E-981A-F43AC471EDEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA86DB9-E267-4B8E-981A-F43AC471EDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA86DB9-E267-4B8E-981A-F43AC471EDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA86DB9-E267-4B8E-981A-F43AC471EDEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
