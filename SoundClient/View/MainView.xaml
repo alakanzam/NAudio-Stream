@@ -4,37 +4,47 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SoundClient"
+        xmlns:enumeration="clr-namespace:SoundClient.Enumeration"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="Sound Client" Height="350" Width="525"
         DataContext="{Binding Main, Source={StaticResource Locator}}" 
         WindowStartupLocation="CenterScreen">
     <StackPanel>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <Label>Devices</Label>
-            <ComboBox Grid.Column="1" 
-                      ItemsSource="{Binding AudioDevices, Mode=OneWay}" 
-                      DisplayMemberPath="FriendlyName">
-            </ComboBox>
-        </Grid>
-
+        <!--Recorders-->
         <Grid Margin="0, 10, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Label>Loopback device</Label>
+            <Label>Recorders</Label>
             <ComboBox Grid.Column="1" 
-                      ItemsSource="{Binding AudioLoopbackDevices, Mode=OneWay}" 
+                      ItemsSource="{Binding Recorders, Mode=OneWay}" 
+                      SelectedItem="{Binding SelectedRecorder}"
                       DisplayMemberPath="FriendlyName">
             </ComboBox>
         </Grid>
+        
+        <Button Margin="0, 10, 0, 0">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Content" Value="Record"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RecorderStatus}" Value="{x:Static enumeration:RecorderStatus.Recording}">
+                            <Setter Property="Content" Value="Stop"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+            
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <i:InvokeCommandAction Command="{Binding ClickToggleVoiceRecorder}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
         
     </StackPanel>
 </Window>
