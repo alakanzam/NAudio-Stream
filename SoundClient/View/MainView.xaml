@@ -12,6 +12,21 @@
         WindowStartupLocation="CenterScreen">
     <StackPanel>
 
+        <!--Available roles-->
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label>Available roles</Label>
+            <ComboBox Grid.Column="1" 
+                      ItemsSource="{Binding AvailableRoles, Mode=OneWay}" 
+                      SelectedItem="{Binding SelectedRole}"
+                      DisplayMemberPath="Name">
+            </ComboBox>
+        </Grid>
+        
         <!--Recorders-->
         <Grid Margin="0, 10, 0, 0">
             <Grid.ColumnDefinitions>
@@ -19,6 +34,16 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedRole.Value}" Value="{x:Static enumeration:AppRole.Server}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            
             <Label>Recorders</Label>
             <ComboBox Grid.Column="1" 
                       ItemsSource="{Binding Recorders, Mode=OneWay}" 
@@ -26,14 +51,156 @@
                       DisplayMemberPath="FriendlyName">
             </ComboBox>
         </Grid>
+
+        <!--Host name and port-->
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="64"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel>
+                <!--Host name-->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedRole.Value}" Value="{x:Static enumeration:AppRole.Server}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label>Host name</Label>
+                    <TextBox Grid.Column="1" Text="{Binding HostName}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ConnectionStatus}" Value="{x:Static enumeration:ConnectionStatus.Connected}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Grid>
+
+                <!--Port-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label>Port</Label>
+                    <TextBox Grid.Column="1" 
+                             Text="{Binding Port}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ConnectionStatus}" Value="{x:Static enumeration:ConnectionStatus.Connected}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Grid>
+            </StackPanel>
+
+            <Button Grid.Column="1">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Content" Value="Connect"/>
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedRole.Value}" Value="{x:Static enumeration:AppRole.Server}">
+                                <Setter Property="Content" Value="Listen"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ConnectionStatus}" Value="{x:Static enumeration:ConnectionStatus.Initial}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:InvokeCommandAction Command="{Binding ClickConnectRelayCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </Grid>
+
+        <!--Playback device-->
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedRole.Value}" Value="{x:Static enumeration:AppRole.Server}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ConnectionStatus}" Value="{x:Static enumeration:ConnectionStatus.Connected}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Label>Playback devices</Label>
+            <ComboBox Grid.Column="1" 
+                      ItemsSource="{Binding PlaybackDevices, Mode=OneWay}" 
+                      SelectedItem="{Binding SelectedPlaybackDevice}"
+                      DisplayMemberPath="FriendlyName">
+            </ComboBox>
+        </Grid>
         
-        <Button Margin="0, 10, 0, 0">
+        <!--Buffer size-->
+        <Grid Margin="0, 10, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label>Buffer size</Label>
+            <TextBox Grid.Column="1" Text="{Binding BufferSize}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ConnectionStatus}" Value="{x:Static enumeration:ConnectionStatus.Connected}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </Grid>
+        
+        <!--Record-->
+        <Button Margin="0, 10, 0, 0" 
+                IsEnabled="{Binding IsRecorderEnabled}"
+                Content="Record">
             <Button.Style>
                 <Style TargetType="Button">
-                    <Setter Property="Content" Value="Record"/>
+                    <Setter Property="Visibility" Value="Visible"></Setter>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RecorderStatus}" Value="{x:Static enumeration:RecorderStatus.Recording}">
-                            <Setter Property="Content" Value="Stop"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RecorderStatus}" Value="{x:Static enumeration:RecorderStatus.Playing}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SelectedRole.Value}" Value="{x:Static enumeration:AppRole.Server}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -41,10 +208,37 @@
             
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <i:InvokeCommandAction Command="{Binding ClickToggleVoiceRecorder}"/>
+                    <i:InvokeCommandAction Command="{Binding ClickRecordRelayCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-        
+
+        <!--Stop recording-->
+        <Button Margin="0, 10, 0, 0" 
+                Content="Stop recording">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RecorderStatus}" Value="{x:Static enumeration:RecorderStatus.Initial}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RecorderStatus}" Value="{x:Static enumeration:RecorderStatus.Playing}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RecorderStatus}" Value="{x:Static enumeration:AppRole.Server}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <i:InvokeCommandAction Command="{Binding ClickStopRelayCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+
     </StackPanel>
 </Window>
