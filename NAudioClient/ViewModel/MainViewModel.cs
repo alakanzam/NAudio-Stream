@@ -134,14 +134,14 @@ namespace UdpClient.ViewModel
         {
             get
             {
-                if (Status == ClientStatus.Initial)
-                    return false;
+                //if (Status == ClientStatus.Initial)
+                //    return false;
 
-                if (Status == ClientStatus.Recording)
-                    return false;
+                //if (Status == ClientStatus.Recording)
+                //    return false;
 
-                if (SelectedRole.Value == ClientRole.Server)
-                    return false;
+                //if (SelectedRole.Value == ClientRole.Server)
+                //    return false;
 
                 return true;
             }
@@ -314,9 +314,9 @@ namespace UdpClient.ViewModel
         /// <param name="waveInEventArgs"></param>
         private async void OnSoundBeingRecorded(object sender, WaveInEventArgs waveInEventArgs)
         {
-            byte[] encoded = SelectedAudioCodec.Encode(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
-            _networkService.Broadcaster.Send(encoded, encoded.Length);
-
+            //byte[] encoded = SelectedAudioCodec.Encode(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
+            //_networkService.Broadcaster.Send(encoded, encoded.Length);
+            _networkService.Broadcaster.Send(waveInEventArgs.Buffer, waveInEventArgs.BytesRecorded);
             //await _audioService.RecordingStream.WriteAsync(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
         }
 
@@ -353,6 +353,7 @@ namespace UdpClient.ViewModel
                         // Initialize playback.
                         // Initialize buffer.
                         _audioService.PlaybackBuffer = new BufferedWaveProvider(SelectedAudioCodec.RecordFormat);
+//                        _audioService.PlaybackBuffer = new BufferedWaveProvider(new WaveFormat(8000, 16, 1));
                         // Play sound.
                         _audioService.Playback = new WaveOut();
                         _audioService.Playback.Init(_audioService.PlaybackBuffer);
@@ -383,9 +384,10 @@ namespace UdpClient.ViewModel
                 {
                     var udpListener = _networkService.Listener;
                     byte[] b = udpListener.Receive(ref endPoint);
-                    byte[] decoded = listenerThreadState.Codec.Decode(b, 0, b.Length);
+                    //byte[] decoded = SelectedAudioCodec.Decode(b, 0, b.Length);
 
-                    _audioService.PlaybackBuffer.AddSamples(decoded, 0, decoded.Length);
+                    //_audioService.PlaybackBuffer.AddSamples(decoded, 0, decoded.Length);
+                    _audioService.PlaybackBuffer.AddSamples(b, 0, b.Length);
                 }
             }
             catch (SocketException ex)
