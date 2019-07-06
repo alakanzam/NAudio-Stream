@@ -7,6 +7,8 @@ namespace Shared.Models.Acm
 {
     public class ALawChatCodec : INetworkChatCodec
     {
+        #region Properties
+
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
@@ -21,6 +23,10 @@ namespace Shared.Models.Acm
         ///     <inheritdoc />
         /// </summary>
         public WaveFormat RecordFormat => new WaveFormat(8000, 16, 1);
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         ///     <inheritdoc />
@@ -52,8 +58,8 @@ namespace Shared.Models.Acm
             for (var n = 0; n < length; n++)
             {
                 var decodedSample = ALawDecoder.ALawToLinearSample(data[n + offset]);
-                decoded[outIndex++] = (byte) (decodedSample & 0xFF);
-                decoded[outIndex++] = (byte) (decodedSample >> 8);
+                decoded[outIndex++] = (byte)(decodedSample & 0xFF);
+                decoded[outIndex++] = (byte)(decodedSample >> 8);
             }
             return decoded;
         }
@@ -64,5 +70,7 @@ namespace Shared.Models.Acm
         }
 
         public bool IsAvailable => true;
+
+        #endregion
     }
 }

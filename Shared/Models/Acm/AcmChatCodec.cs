@@ -13,6 +13,11 @@ namespace Shared.Models.Acm
     {
         #region Constructor
 
+        /// <summary>
+        /// Initialize base Acm chat codec.
+        /// </summary>
+        /// <param name="recordFormat"></param>
+        /// <param name="encodeFormat"></param>
         protected AcmChatCodec(WaveFormat recordFormat, WaveFormat encodeFormat)
         {
             RecordFormat = recordFormat;
